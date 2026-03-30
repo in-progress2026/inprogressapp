@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NOTES — In Progress: Local Music</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+    :root {
+      --bg: #191919;
+      --surface: #222222;
+      --border: #2e2e2e;
+      --orange: #FF8100;
+      --orange-dim: rgba(255, 129, 0, 0.12);
+      --text: #e8e8e8;
+      --text-dim: #666666;
+      --text-mid: #999999;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* HEADER */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 24px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+
+    .wordmark {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .wordmark span {
+      color: var(--orange);
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .header-right a {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--orange);
+      text-decoration: none;
+      border: 1px solid var(--orange);
+      padding: 6px 14px;
+      transition: background 0.2s;
+    }
+
+    .header-right a:hover {
+      background: var(--orange-dim);
+    }
+
+    /* HERO */
+    .hero {
+      padding: 80px 40px 60px;
+      border-bottom: 1px solid var(--border);
+      max-width: 860px;
+    }
+
+    .hero-label {
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--orange);
+    }
+
+    /* MAIN LAYOUT */
+    .layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      border-right: 1px solid var(--border);
+      padding: 40px 24px;
+      position: sticky;
+      top: 61px;
+      height: calc(100vh - 61px);
+      overflow-y: auto;
+    }
+
+    .sidebar-label {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .sidebar-entry {
+      display: block;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .sidebar-entry:last-child {
+      border-bottom: none;
+    }
+
+    .sidebar-entry .entry-num {
+      font-size: 10px;
+      color: var(--orange);
+      letter-spacing: 0.15em;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-entry .entry-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      line-height: 1.4;
+      transition: color 0.2s;
+    }
+
+    .sidebar-entry:hover .entry-title,
+    .sidebar-entry.active .entry-title {
+      color: var(--text);
+    }
+
+    .sidebar-entry.active .entry-num {
+      color: var(--orange);
+    }
+
+    /* CONTENT AREA */
+    .content {
+      padding: 0;
+    }
+
+    /* POST */
+    .post {
+      border-bottom: 1px solid var(--border);
+      padding: 60px 60px 80px;
+      max-width: 720px;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    .post:nth-child(1) { animation-delay: 0.05s; }
+    .post:nth-child(2) { animation-delay: 0.15s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .post-num {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--orange);
+    }
+
+    .post-date {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .post-tag {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+    }
+
+    .post h2 {
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.25;
+      margin-bottom: 40px;
+      color: var(--text);
+    }
+
+    .post-body p {
+      font-size: 14px;
+      line-height: 1.9;
+      color: #c8c8c8;
+      margin-bottom: 24px;
+    }
+
+    .post-body p strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .post-body .highlight {
+      border-left: 2px solid var(--orange);
+      padding-left: 20px;
+      margin: 32px 0;
+      color: var(--text);
+      font-style: italic;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .post-body .feature-list {
+      list-style: none;
+      margin: 24px 0;
+    }
+
+    .post-body .feature-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: #c8c8c8;
+      display: flex;
+      gap: 12px;
+    }
+
+    .post-body .feature-list li::before {
+      content: '→';
+      color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .post-footer {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .post-footer .version-badge {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      background: var(--orange-dim);
+      padding: 6px 12px;
+      border: 1px solid rgba(255,129,0,0.3);
+    }
+
+    .post-footer .app-link {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .post-footer .app-link:hover {
+      color: var(--orange);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer span {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover {
+      color: var(--orange);
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--orange); }
+
+    /* MOBILE */
+    @media (max-width: 700px) {
+      header { padding: 16px 20px; }
+      .hero { padding: 48px 20px 40px; }
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .post { padding: 40px 20px 60px; }
+      footer { padding: 24px 20px; flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <a class="wordmark" href="index.html">IN_<span>PROGRESS</span></a>
+      <span class="section-label">/ Notes</span>
+    </div>
+    <div class="header-right">
+      <a href="https://apps.apple.com/us/app/in-progress-local-music/id6760368318" target="_blank">↓ Get The App</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <p class="hero-label">Build Log — In Progress: Local Music</p>
+    <h1>Notes from<br/>the <em>process.</em></h1>
+  </div>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <p class="sidebar-label">Entries</p>
+
+      <a class="sidebar-entry active" href="#entry-001">
+        <div class="entry-num">001</div>
+        <div class="entry-title">The Gap Between The DAW And The Stream</div>
+      </a>
+
+      <a class="sidebar-entry" href="#entry-002">
+        <div class="entry-num">002</div>
+        <div class="entry-title">V1.2 — The Sharing Update</div>
+      </a>
+    </aside>
+
+    <main class="content">
+
+      <!-- ENTRY 001 -->
+      <article class="post" id="entry-001">
+        <div class="post-meta">
+          <span class="post-num">001</span>
+          <span class="post-date">March 2026</span>
+          <span class="post-tag">Manifesto</span>
+        </div>
+        <h2>The Gap Between<br/>The DAW And The Stream</h2>
+        <div class="post-body">
+
+          <p>While creating you listen to your music in your DAW.</p>
+
+          <p>When I used to work in music, I loved to test the music in different speakers and in different headphones. I used to overanalyze every EQ change and how it sounded everywhere.</p>
+
+          <p>It was so annoying to keep doing that in the Files App. It was even worse to use WhatsApp. I had to remember where every file was, who sent me, when I saved it. So confusing. <strong>It lacks dignity.</strong></p>
+
+          <p>There was a mess of files of unfinished music, that I was too lazy to organize, because it was hard and not intuitive to organize.</p>
+
+          <div class="highlight">
+            There is a huge gap between the DAW and the Streaming Service. That gap is slowly being fixed. There are amazing tools out there.
+          </div>
+
+          <p>However, most of them are just way too complicated. They ask you for subscriptions; they have useless features; and they don't even look that good.</p>
+
+          <p>I created In Progress not because there were no alternatives — I created it because there were no <strong>good</strong> alternatives.</p>
+
+          <p>Why would I rent a tool to listen to what I own?</p>
+
+          <p>Why would I pay per month for something an early 2000's mp3 player did for 20 bucks?</p>
+
+          <p>This is 2026. I wanted a good audio player for local files, and I think I built a good audio player for local files.</p>
+
+          <ul class="feature-list">
+            <li>Organizing files by nesting Folders and Playlists is an OCD paradise.</li>
+            <li>Analyzing the Key to the songs is a must-have feature for musicians who don't know how to get there by ear.</li>
+            <li>Adding a manual Queue is an amazing way to have control over your playback experience.</li>
+            <li>Allowing users to share entire playlists via AirDrop, completely offline — keeping not only the files, but also the custom names and order — is a feature I'm really proud of.</li>
+          </ul>
+
+          <p>Download In Progress 1.2. Listen to your files with dignity. You won't be disappointed.</p>
+
+        </div>
+        <div class="post-footer">
+          <span class="version-badge">V 1.2 — Live Now</span>
+          <a class="app-link" href="https://apps.apple.com/us/app/in-progress-local-music/id6760368318" target="_blank">App Store →</a>
+        </div>
+      </article>
+
+      <!-- ENTRY 002 -->
+      <article class="post" id="entry-002">
+        <div class="post-meta">
+          <span class="post-num">002</span>
+          <span class="post-date">March 2026</span>
+          <span class="post-tag">Update</span>
+        </div>
+        <h2>V1.2 —<br/>The Sharing Update</h2>
+        <div class="post-body">
+
+          <p>Most music apps are built for streaming. But if you make music, you're constantly listening to your own demos, drafts, and unfinished ideas — and those tools just don't feel right.</p>
+
+          <p>V1.2 adds one thing I always wanted: you can now send full playlists to another musician via AirDrop — completely offline. It also works via WhatsApp or iMessage.</p>
+
+          <p><strong>No cloud. No accounts. No syncing.</strong> Just files, like it should be.</p>
+
+          <p>I'm trying to make this feel less like a "music player" and more like a tool for working on your own music.</p>
+
+          <p>Also — someone emailed me saying the text was too small, so I added a Large Text setting just for that. I'm reading everything and adjusting as I go.</p>
+
+          <p>There is no developers team, no design team, no marketing team — just me, doing it in my free time.</p>
+
+          <p>It's €1.99, one-time. No subscriptions. Keep creating, and listen to your music with dignity.</p>
+
+        </div>
+        <div class="post-footer">
+          <span class="version-badge">V 1.2 — The Sharing Update</span>
+          <a class="app-link" href="https://apps.apple.com/us/app/in-progress-local-music/id6760368318" target="_blank">App Store →</a>
+        </div>
+      </article>
+
+    </main>
+  </div>
+
+  <footer>
+    <span>In Progress: Local Music — © 2026 Guilherme Xavier</span>
+    <a href="https://apps.apple.com/us/app/in-progress-local-music/id6760368318" target="_blank">Get The App</a>
+  </footer>
+
+</body>
+</html>
